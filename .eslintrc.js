@@ -1,25 +1,34 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "commonjs": true,
-        "es6": true
+    'root': true,
+    'env': {
+        'browser': true,
+        'es6': true,
+        'node': true
     },
-    "extends": [
-        "eslint:recommended",
-        "plugin:vue/essential"
+    'extends': [
+        'eslint:recommended',
+        'plugin:vue/recommended'
     ],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
+    'globals': {
+        'Atomics': 'readonly',
+        'SharedArrayBuffer': 'readonly'
     },
-    "parser": "babel-eslint",
-    "parserOptions": {
-        "ecmaVersion": 2018
+    'parserOptions': {
+        'parser': 'babel-eslint',
+        'ecmaVersion': 2018,
+        'sourceType': 'module'
     },
-    "plugins": [
-        "vue"
-    ],
-    "rules": {
-        "no-console": [ "error"]
+    'rules': {
+        'no-console': 'off',
+        // 未使用的变量
+        'no-unused-vars': 'warn',
+        // 分号
+        'semi':['warn','always'],
+        'semi-spacing': ['error', {'before': false, 'after': true}],
+        'no-extra-semi': 'warn',
+        // 引号
+        'quotes': ['error', 'single', { 'avoidEscape': true }],
+        // 函数
+        'space-before-function-paren': ['warn', 'always']
     }
 };
