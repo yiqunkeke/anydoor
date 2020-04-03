@@ -29,6 +29,8 @@ module.exports = {
         // 引号
         'quotes': ['error', 'single', { 'avoidEscape': true }],
         // 函数
-        'space-before-function-paren': ['warn', 'always']
+        'space-before-function-paren': ['warn', 'always'],
+        // 要求箭头函数的箭头之前或之后有空格
+        'arrow-spacing': ['warn', { "before": true, "after": true }]
     }
 };
