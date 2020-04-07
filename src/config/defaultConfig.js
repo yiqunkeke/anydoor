@@ -10,8 +10,8 @@ module.exports = {
     root: process.cwd(),
     hostname: '127.0.0.1',
     port: 9527,
-    compress: /\.(html|js|css|md)/,
-    cache: {
+    compress: /\.(html|js|css|md)/, // 压缩
+    cache: { // 缓存
         maxAge: 600,
         expires: true,
         cacheControl: true,
