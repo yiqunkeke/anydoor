@@ -200,3 +200,73 @@ server.listen(conf.port, conf.hostname, () => {
       * 如果访问的是目录，则目录名前面加图标
       *
       */
+
+      /** 完善功能：
+       *  文件压缩
+       *  Accept-Encoding: gzip, deflate, br
+       *  在request headers中设置，
+       *  告诉服务器客户端支持的压缩方式。也就是说，如果用这几种方式进行压缩，我客户端都能够进行解压。
+       *
+       *  Content-Encoding: gzip
+       *  response headers
+       *
+       *  好处： 减少http的传输量、
+       *
+       *  并不是所有的文件都需要压缩
+       *  所以我们在 defaultConfig.js中配置
+       *  compress: /\.(html|js|css|md)/
+       *  并在helper文件新增 compress.js来写压缩方法
+       */
+
+
+    /** 完善功能
+     * range 范围请求
+     * 可以声明请求内容的范围，比如从多少字节到多少字节
+     * 而不是要求一次把所有内容都拿回来
+     *
+     * 服务器在收到相应的请求后，会拿到文件，并拿到对应字节，再返回给客户端
+     *
+     * 实现步骤：
+     *
+     * 1. request headers中：
+     *  range: bytes=[start]-[end]
+     *
+     * 2. response headers
+     *  Accept-Ranges: bytes
+     *
+     * 3.Content-Range: bytes start-end/total
+     *
+     * 这样就能拿到文件的部分内容了。
+     * 可以查看 http协议关于range的东西
+     *
+     * git bash中
+     * curl http://127.0.0.1:9527/LICENSE
+     *
+     * curl -I http://127.0.0.1:9527/LICENSE
+     * // 只看header
+     *
+     * curl -i http://127.0.0.1:9527/LICENSE
+     * // 看 header 和 内容
+     *
+     * curl -r 0-10 -i http://127.0.0.1:9527/LICENSE
+     * // 指定range
+     */
+
+     /** 优化：
+      * 设置缓存
+      *                       no
+      * 用户请求---> 本地缓存 -----> 请求资源 ---> 协商缓存，返回内容
+      *                       yes
+      *                      -----> client失效
+      *
+      *
+      * 1. Expires, Cache-Control
+      * Expires: 使用绝对时间---存在时区问题
+      * Cache-Control中的 max-age
+      *
+      * 2. If-Modified-Since/Last-Modified
+      *
+      * 3. If-None-Match/ETag
+      *
+      */
+

@@ -6,6 +6,9 @@ const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
 const config = require('../config/defaultConfig');
 const mime = require('./mime');
+const compress = require('./compress');
+const range = require('./range');
+const isFresh = require('./cache');
 
 const tplPath = path.join(__dirname, '../template/dir.tpl'); // 拼接模板文件路径
 const source = fs.readFileSync(tplPath); // 读取模板源码---默认buffer格式
@@ -24,10 +27,34 @@ module.exports = async function(req, res, filePath) {
         // 如果是文件，则读取文件并返回
         if(stats.isFile()) {
             const contentType = mime(filePath);
-            res.statusCode = 200;
             // 如果是文件的话，使用 mimeType识别，返回不同类型的格式
             res.setHeader('Content-Type', contentType.text);
-            fs.createReadStream(filePath).pipe(res);
+            // fs.createReadStream(filePath).pipe(res);
+
+            // 判断缓存拦截
+            if(isFresh(stats, req, res)) {
+                // 如果缓存有效
+                res.statusCode = 304;
+                res.end();
+                return;
+            }
+
+            // range 取范围
+            let rs;
+            const {code, start, end} = range(stats.size, req, res);
+            if(code===200) {
+                res.statusCode = 200;
+                rs = fs.createReadStream(filePath);
+            } else {
+                res.statusCode = 216; // 代表是部分内容
+                rs = fs.createReadStream(filePath, {start, end})
+            }
+
+            // 进行压缩
+            if(filePath.match(config.compress)) {
+                rs = compress(rs, req, res);
+            }
+            rs.pipe(res);
 
         } else if(stats.isDirectory()) {
             // 如果是文件夹，则返回文件列表
